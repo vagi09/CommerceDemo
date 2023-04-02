@@ -1,0 +1,50 @@
+import pytest
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from webdriver_manager.firefox import GeckoDriverManager
+from webdriver_manager.microsoft import EdgeDriverManager
+from webdriver_manager.microsoft import IEDriverManager
+from webdriver_manager.microsoft import EdgeChromiumDriverManager
+from webdriver_manager.opera import OperaDriverManager
+from webdriver_manager.safari import SafariDriverManager
+
+
+def pytest_addoption(parser):
+    parser.addoption(
+        "--browser",
+        action="store",
+        default="chrome",
+        help="Browser to use for running tests. Supported options are chrome, firefox, edge, ie, edgechromium, opera, and safari.",
+    )
+
+
+@pytest.fixture(scope="session")
+def browser(request):
+    browser_name = request.config.getoption("--browser")
+
+    if browser_name == "chrome":
+        driver_path = ChromeDriverManager().install()
+        browser = webdriver.Chrome(driver_path)
+    elif browser_name == "firefox":
+        driver_path = GeckoDriverManager().install()
+        browser = webdriver.Firefox(executable_path=driver_path)
+    elif browser_name == "edge":
+        driver_path = EdgeDriverManager().install()
+        browser = webdriver.Edge(executable_path=driver_path)
+    elif browser_name == "ie":
+        driver_path = IEDriverManager().install()
+        browser = webdriver.Ie(executable_path=driver_path)
+    elif browser_name == "edgechromium":
+        driver_path = EdgeChromiumDriverManager().install()
+        browser = webdriver.EdgeChromium(executable_path=driver_path)
+    elif browser_name == "opera":
+        driver_path = OperaDriverManager().install()
+        browser = webdriver.Opera(executable_path=driver_path)
+    elif browser_name == "safari":
+        driver_path = SafariDriverManager().install()
+        browser = webdriver.Safari(executable_path=driver_path)
+    else:
+        raise ValueError(f"Unsupported browser name: {browser_name}")
+
+    yield browser
+    browser.quit()
