@@ -1,6 +1,7 @@
 from config.config import TestData
 from pages.Login_Page import LoginPage
 from tests.test_base import BaseTest
+import time
 
 
 class Test_Verify_Login(BaseTest):
@@ -17,5 +18,11 @@ class Test_Verify_Login(BaseTest):
 
     def test_login_into(self):
         self.login = LoginPage(self.driver)
-        self.login.click_on_link()
+        # self.login.click_on_link()
+        time.sleep(6)
         self.login.login_website(TestData.EMAIL, TestData.PASSWORD)
+
+    def test_log_in_btn_exist(self):
+        self.login = LoginPage(self.driver)
+        flag = self.login.login_btn_exist()
+        assert flag
